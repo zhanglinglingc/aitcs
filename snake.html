@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>贪吃蛇 - 宇宙星空</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -157,14 +157,42 @@
 
         /* ===== TITLE SCREEN ===== */
         #title-screen h1 {
-            font-size: 48px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00c8ff, #cc44ff);
+            font-family: 'ZCOOL QingKe HuangYou', 'Orbitron', sans-serif;
+            font-size: clamp(72px, 18vw, 132px);
+            font-weight: 400;
+            line-height: 0.92;
+            letter-spacing: 0.08em;
+            padding-left: 0.08em;
+            transform: skewX(-7deg);
+            background: linear-gradient(120deg, #2bdcff 0%, #1b8cff 32%, #9a6bff 62%, #ff4fd8 100%);
+            background-size: 220% 220%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0 0 10px rgba(0, 200, 255, 0.5));
-            margin-bottom: 10px;
+            -webkit-text-stroke: 1px rgba(160, 236, 255, 0.36);
+            filter:
+                drop-shadow(0 0 10px rgba(0, 220, 255, 0.62))
+                drop-shadow(0 0 34px rgba(156, 78, 255, 0.46));
+            margin-bottom: 18px;
+            animation: titlePrism 4.5s ease-in-out infinite;
+            text-shadow:
+                4px 0 0 rgba(0, 120, 255, 0.26),
+                -4px 0 0 rgba(255, 64, 216, 0.18);
+        }
+
+        @keyframes titlePrism {
+            0%, 100% {
+                background-position: 0% 50%;
+                filter:
+                    drop-shadow(0 0 10px rgba(0, 220, 255, 0.62))
+                    drop-shadow(0 0 34px rgba(156, 78, 255, 0.46));
+            }
+            50% {
+                background-position: 100% 50%;
+                filter:
+                    drop-shadow(0 0 18px rgba(0, 240, 255, 0.84))
+                    drop-shadow(0 0 46px rgba(255, 64, 216, 0.55));
+            }
         }
 
         #title-screen .subtitle {
@@ -315,7 +343,8 @@
                 padding: 6px 8px;
             }
             #title-screen h1 {
-                font-size: clamp(36px, 14vw, 54px);
+                font-size: clamp(66px, 22vw, 96px);
+                letter-spacing: 0.04em;
             }
             #mode-screen {
                 width: 100%;
