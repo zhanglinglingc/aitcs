@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game Visual Styles</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Press+Start+2P&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d0d14;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.5rem, 4vw, 2.8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #00f0ff, #ff00aa, #00f0ff);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleShift 4s ease-in-out infinite;
+    }
+
+    @keyframes titleShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .subtitle {
+      color: #555;
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .card {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: default;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* ---- OPTION A: CYBERPUNK ---- */
+    .card-a {
+      background: #0a0a0f;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+    .card-a:hover {
+      box-shadow: 0 0 50px rgba(0, 240, 255, 0.25), 0 0 100px rgba(255, 0, 170, 0.1), inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-a .preview {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      background: #0a0a0f;
+    }
+
+    .card-a .preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 240, 255, 0.03) 2px,
+        rgba(0, 240, 255, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* CRT scanlines */
+    .card-a .preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 0, 0.4) 1px,
+        rgba(0, 0, 0, 0.4) 2px
+      );
+      pointer-events: none;
+      z-index: 11;
+      animation: scanMove 8s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    .card-a .grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.07) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-a .snake-segment {
+      position: absolute;
+      border-radius: 3px;
+      animation: cyberpunkGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes cyberpunkGlow {
+      0% { box-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4); }
+      100% { box-shadow: 0 0 14px rgba(0, 240, 255, 1), 0 0 35px rgba(0, 240, 255, 0.6), 0 0 50px rgba(255, 0, 170, 0.3); }
+    }
+
+    .card-a .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: particleDrift 3s ease-in-out infinite;
+    }
+
+    @keyframes particleDrift {
+      0% { opacity: 0; transform: scale(0) translate(0, 0); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.5) translate(var(--tx, 30px), var(--ty, -20px)); }
+    }
+
+    .card-a .snake-head {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #00f0ff;
+      border-radius: 4px;
+      box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff, 0 0 45px rgba(0, 240, 255, 0.5);
+      z-index: 5;
+      animation: headPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes headPulse {
+      0%, 100% { box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff, 0 0 45px rgba(0, 240, 255, 0.5); }
+      50% { box-shadow: 0 0 25px #00f0ff, 0 0 50px #00f0ff, 0 0 80px rgba(255, 0, 170, 0.4); }
+    }
+
+    .card-a .food {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #ff00aa;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ff00aa, 0 0 25px #ff00aa;
+      z-index: 5;
+      animation: foodPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes foodPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 10px #ff00aa, 0 0 25px #ff00aa; }
+      50% { transform: scale(1.2); box-shadow: 0 0 20px #ff00aa, 0 0 40px #ff00aa; }
+    }
+
+    /* ---- OPTION B: MINIMALIST ---- */
+    .card-b {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    .card-b:hover {
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-b .preview {
+      height: 200px;
+      position: relative;
+      background: #fafafa;
+      overflow: hidden;
+    }
+
+    .card-b .grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(#e8e8e8 1px, transparent 1px),
+        linear-gradient(90deg, #e8e8e8 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-b .snake-segment {
+      position: absolute;
+      background: #111;
+      border-radius: 2px;
+    }
+
+    .card-b .snake-head {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #111;
+      z-index: 5;
+    }
+
+    .card-b .snake-head::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid #111;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+
+    .card-b .food {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #111;
+      border-radius: 50%;
+      z-index: 5;
+    }
+
+    /* ---- OPTION C: RETRO PIXEL ---- */
+    .card-c {
+      background: #1a0a2e;
+      border: 1px solid #3d1a6e;
+      box-shadow: 0 0 20px rgba(61, 26, 110, 0.4);
+    }
+    .card-c:hover {
+      box-shadow: 0 0 40px rgba(100, 50, 180, 0.5), 0 0 60px rgba(61, 26, 110, 0.3);
+    }
+
+    .card-c .preview {
+      height: 200px;
+      position: relative;
+      background: #1a0a2e;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    .card-c .preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.3) 2px,
+        rgba(0, 0, 0, 0.3) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .card-c .pixel-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(100, 60, 200, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100, 60, 200, 0.15) 1px, transparent 1px);
+      background-size: 8px 8px;
+    }
+
+    .card-c .pixel-block {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 0;
+    }
+
+    .card-c .snake-head {
+      position: absolute;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: repeat(2, 8px);
+      grid-template-rows: repeat(2, 8px);
+      gap: 0;
+      animation: retroBlink 1s step-end infinite;
+    }
+
+    @keyframes retroBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0.85; }
+    }
+
+    .card-c .food {
+      position: absolute;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: repeat(2, 8px);
+      grid-template-rows: repeat(2, 8px);
+      gap: 0;
+      animation: retroFood 0.6s step-end infinite;
+    }
+
+    @keyframes retroFood {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
+    }
+
+    /* ---- OPTION D: COSMIC SPACE ---- */
+    .card-d {
+      background: #050510;
+      border: 1px solid rgba(100, 80, 200, 0.2);
+      box-shadow: 0 0 30px rgba(80, 60, 160, 0.15), inset 0 0 40px rgba(0, 0, 20, 0.8);
+    }
+    .card-d:hover {
+      box-shadow: 0 0 60px rgba(100, 80, 200, 0.25), inset 0 0 40px rgba(0, 0, 20, 0.8);
+    }
+
+    .card-d .preview {
+      height: 200px;
+      position: relative;
+      background: radial-gradient(ellipse at 30% 40%, #0d0030 0%, #050510 60%, #020208 100%);
+      overflow: hidden;
+    }
+
+    .card-d .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle var(--dur, 2s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .card-d .nebula {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 60% 30%, rgba(120, 0, 200, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 70%, rgba(0, 80, 200, 0.1) 0%, transparent 50%);
+      animation: nebulaDrift 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes nebulaDrift {
+      0% { opacity: 0.6; transform: translateX(-5px) scale(1); }
+      100% { opacity: 1; transform: translateX(5px) scale(1.05); }
+    }
+
+    .card-d .comet-trail {
+      position: absolute;
+      border-radius: 4px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4));
+      animation: cometMove 4s ease-in-out infinite;
+      filter: blur(3px);
+    }
+
+    @keyframes cometMove {
+      0% { opacity: 0; transform: translateX(-20px) scaleX(0.5); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(60px) scaleX(1.5); }
+    }
+
+    .card-d .snake-head {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle at 35% 35%, #a0e0ff, #00d0ff);
+      border-radius: 4px;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.6), 0 0 30px rgba(0, 240, 255, 0.3), 0 0 60px rgba(100, 0, 200, 0.2);
+      z-index: 5;
+      animation: cosmicHead 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes cosmicHead {
+      0% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.6), 0 0 30px rgba(0, 240, 255, 0.3); }
+      100% { box-shadow: 0 0 25px rgba(160, 0, 255, 0.7), 0 0 50px rgba(100, 0, 200, 0.4); }
+    }
+
+    .card-d .food {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(circle, #ff88cc, #cc44ff);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(204, 68, 255, 0.8), 0 0 30px rgba(204, 68, 255, 0.4);
+      z-index: 5;
+      animation: cosmicFood 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes cosmicFood {
+      0% { box-shadow: 0 0 12px rgba(204, 68, 255, 0.8), 0 0 30px rgba(204, 68, 255, 0.4); }
+      100% { box-shadow: 0 0 20px rgba(255, 136, 204, 1), 0 0 50px rgba(255, 136, 204, 0.5); }
+    }
+
+    /* ---- SHARED CARD BODY ---- */
+    .card-body {
+      padding: 20px 22px 22px;
+    }
+
+    .card-a .card-body { background: #0a0a0f; }
+    .card-b .card-body { background: #fff; }
+    .card-c .card-body { background: #1a0a2e; }
+    .card-d .card-body { background: #050510; }
+
+    .card-label {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .card-a .card-label { background: rgba(0, 240, 255, 0.12); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); }
+    .card-b .card-label { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+    .card-c .card-label { background: rgba(100, 60, 200, 0.25); color: #c8a0ff; border: 1px solid rgba(100, 60, 200, 0.4); }
+    .card-d .card-label { background: rgba(100, 80, 200, 0.15); color: #b0a0ff; border: 1px solid rgba(100, 80, 200, 0.3); }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .card-a .card-title { font-family: 'Orbitron', sans-serif; color: #00f0ff; text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+    .card-b .card-title { font-family: 'Space Mono', monospace; color: #111; }
+    .card-c .card-title { font-family: 'Press Start 2P', cursive; font-size: 0.7rem; color: #d0b0ff; text-shadow: 2px 2px 0 rgba(80, 0, 160, 0.5); letter-spacing: 0.05em; }
+    .card-d .card-title { font-family: 'Orbitron', sans-serif; color: #a0a0ff; text-shadow: 0 0 15px rgba(100, 80, 200, 0.4); }
+
+    .card-desc {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .card-a .card-desc { color: #7aa0aa; }
+    .card-b .card-desc { color: #555; }
+    .card-c .card-desc { color: #9060c0; }
+    .card-d .card-desc { color: #7070a0; }
+
+    .palette-bar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .palette-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    .card-a .palette-label { color: #3a5560; }
+    .card-b .palette-label { color: #aaa; }
+    .card-c .palette-label { color: #6040a0; }
+    .card-d .palette-label { color: #404070; }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .card-a .swatch:nth-child(2) { background: #0a0a0f; border: 1px solid #222; }
+    .card-a .swatch:nth-child(3) { background: #00f0ff; box-shadow: 0 0 6px #00f0ff; }
+    .card-a .swatch:nth-child(4) { background: #ff00aa; box-shadow: 0 0 6px #ff00aa; }
+
+    .card-b .swatch:nth-child(2) { background: #ffffff; border: 1px solid #ddd; }
+    .card-b .swatch:nth-child(3) { background: #111111; }
+    .card-b .swatch:nth-child(4) { background: #888888; }
+
+    .card-c .swatch:nth-child(2) { background: #1a0a2e; border: 1px solid #3d1a6e; }
+    .card-c .swatch:nth-child(3) { background: #9b59b6; }
+    .card-c .swatch:nth-child(4) { background: #2ecc71; }
+    .card-c .swatch:nth-child(5) { background: #f39c12; box-shadow: 0 0 4px rgba(243, 156, 18, 0.5); }
+
+    .card-d .swatch:nth-child(2) { background: #050510; border: 1px solid #1a1a3a; }
+    .card-d .swatch:nth-child(3) { background: #a0e0ff; box-shadow: 0 0 6px rgba(0, 240, 255, 0.6); }
+    .card-d .swatch:nth-child(4) { background: #cc44ff; box-shadow: 0 0 6px rgba(204, 68, 255, 0.6); }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Snake Game Styles</h1>
+  <p class="subtitle">4 Visual Aesthetic Options</p>
+
+  <div class="grid">
+
+    <!-- OPTION A: CYBERPUNK -->
+    <div class="card card-a">
+      <div class="preview">
+        <div class="grid-lines"></div>
+
+        <!-- Snake segments -->
+        <div class="snake-segment snake-head" style="left:80px;top:80px;"></div>
+        <div class="snake-segment" style="left:60px;top:80px;width:16px;height:16px;background:#00c8dd;border-radius:3px;animation-delay:0.2s;"></div>
+        <div class="snake-segment" style="left:40px;top:80px;width:16px;height:16px;background:#009aaa;border-radius:3px;animation-delay:0.4s;"></div>
+        <div class="snake-segment" style="left:20px;top:80px;width:14px;height:14px;background:#007080;border-radius:2px;animation-delay:0.6s;"></div>
+
+        <!-- Food -->
+        <div class="food" style="left:160px;top:60px;"></div>
+
+        <!-- Particles -->
+        <div class="particle" style="left:85px;top:75px;background:#00f0ff;--tx:20px;--ty:-15px;animation-delay:0s;"></div>
+        <div class="particle" style="left:90px;top:85px;background:#ff00aa;--tx:30px;--ty:10px;animation-delay:0.8s;"></div>
+        <div class="particle" style="left:75px;top:90px;background:#00f0ff;--tx:-10px;--ty:20px;animation-delay:1.6s;"></div>
+        <div class="particle" style="left:165px;top:65px;background:#ff00aa;--tx:15px;--ty:-25px;animation-delay:0.4s;"></div>
+      </div>
+      <div class="card-body">
+        <span class="card-label">Option A</span>
+        <div class="card-title">赛博朋克 Neon</div>
+        <p class="card-desc">Glowing neon trails cut through a dark grid, alive with pulsing light and CRT scanline nostalgia.</p>
+        <div class="palette-bar">
+          <span class="palette-label">Palette</span>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION B: MINIMALIST -->
+    <div class="card card-b">
+      <div class="preview">
+        <div class="grid-lines"></div>
+
+        <!-- Snake segments -->
+        <div class="snake-segment snake-head" style="left:80px;top:80px;"></div>
+        <div class="snake-segment" style="left:60px;top:80px;width:18px;height:18px;background:#111;"></div>
+        <div class="snake-segment" style="left:40px;top:80px;width:18px;height:18px;background:#333;"></div>
+        <div class="snake-segment" style="left:20px;top:80px;width:18px;height:18px;background:#555;"></div>
+
+        <!-- Food -->
+        <div class="food" style="left:160px;top:60px;"></div>
+      </div>
+      <div class="card-body">
+        <span class="card-label">Option B</span>
+        <div class="card-title">极简几何</div>
+        <p class="card-desc">Clean geometry, pure contrast, and razor-sharp lines create a timeless minimalist statement.</p>
+        <div class="palette-bar">
+          <span class="palette-label">Palette</span>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION C: RETRO PIXEL -->
+    <div class="card card-c">
+      <div class="preview">
+        <div class="pixel-grid"></div>
+
+        <!-- Snake: pixel block grid -->
+        <div class="snake-head" style="left:80px;top:80px;">
+          <div style="background:#2ecc71;width:8px;height:8px;"></div>
+          <div style="background:#2ecc71;width:8px;height:8px;"></div>
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+        </div>
+        <div style="position:absolute;left:60px;top:80px;display:grid;grid-template-columns:repeat(2,8px);grid-template-rows:repeat(2,8px);gap:0;">
+          <div style="background:#2ecc71;width:8px;height:8px;"></div>
+          <div style="background:#2ecc71;width:8px;height:8px;"></div>
+          <div style="background:#1e8449;width:8px;height:8px;"></div>
+          <div style="background:#1e8449;width:8px;height:8px;"></div>
+        </div>
+        <div style="position:absolute;left:40px;top:80px;display:grid;grid-template-columns:repeat(2,8px);grid-template-rows:repeat(2,8px);gap:0;">
+          <div style="background:#2ecc71;width:8px;height:8px;"></div>
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+          <div style="background:#1e8449;width:8px;height:8px;"></div>
+        </div>
+        <div style="position:absolute;left:20px;top:80px;display:grid;grid-template-columns:repeat(2,8px);grid-template-rows:repeat(2,8px);gap:0;">
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+          <div style="background:#27ae60;width:8px;height:8px;"></div>
+          <div style="background:#1e8449;width:8px;height:8px;"></div>
+          <div style="background:#1e8449;width:8px;height:8px;"></div>
+        </div>
+
+        <!-- Food pixel block -->
+        <div class="food" style="left:160px;top:60px;">
+          <div style="background:#f39c12;width:8px;height:8px;"></div>
+          <div style="background:#f39c12;width:8px;height:8px;"></div>
+          <div style="background:#d68910;width:8px;height:8px;"></div>
+          <div style="background:#d68910;width:8px;height:8px;"></div>
+        </div>
+
+        <!-- Retro screen decorations -->
+        <div style="position:absolute;top:10px;left:10px;font-family:'Press Start 2P',cursive;font-size:5px;color:#9b59b6;opacity:0.7;">SCORE:0080</div>
+      </div>
+      <div class="card-body">
+        <span class="card-label">Option C</span>
+        <div class="card-title">复古像素</div>
+        <p class="card-desc">Chunky 8-bit blocks and nostalgic CRT scanlines transport players straight to an arcade in 1989.</p>
+        <div class="palette-bar">
+          <span class="palette-label">Palette</span>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION D: COSMIC SPACE -->
+    <div class="card card-d">
+      <div class="preview">
+        <div class="nebula"></div>
+
+        <!-- Stars -->
+        <div class="star" style="left:30px;top:20px;width:2px;height:2px;--dur:2.1s;--delay:0s;"></div>
+        <div class="star" style="left:90px;top:15px;width:3px;height:3px;--dur:1.8s;--delay:0.3s;"></div>
+        <div class="star" style="left:150px;top:30px;width:1.5px;height:1.5px;--dur:2.5s;--delay:0.7s;"></div>
+        <div class="star" style="left:200px;top:20px;width:2px;height:2px;--dur:1.9s;--delay:1.1s;"></div>
+        <div class="star" style="left:250px;top:40px;width:2.5px;height:2.5px;--dur:2.3s;--delay:0.5s;"></div>
+        <div class="star" style="left:60px;top:100px;width:1.5px;height:1.5px;--dur:2.7s;--delay:1.5s;"></div>
+        <div class="star" style="left:180px;top:120px;width:2px;height:2px;--dur:1.6s;--delay:0.9s;"></div>
+        <div class="star" style="left:270px;top:90px;width:1.5px;height:1.5px;--dur:2.2s;--delay:1.8s;"></div>
+        <div class="star" style="left:20px;top:150px;width:2px;height:2px;--dur:2.8s;--delay:0.2s;"></div>
+        <div class="star" style="left:130px;top:170px;width:1px;height:1px;--dur:1.5s;--delay:1.2s;"></div>
+        <div class="star" style="left:220px;top:160px;width:2px;height:2px;--dur:2.0s;--delay:0.6s;"></div>
+        <div class="star" style="left:290px;top:150px;width:1.5px;height:1.5px;--dur:2.4s;--delay:1.4s;"></div>
+        <div class="star" style="left:50px;top:60px;width:2px;height:2px;--dur:1.7s;--delay:0.8s;"></div>
+        <div class="star" style="left:230px;top:70px;width:1px;height:1px;--dur:2.6s;--delay:2.0s;"></div>
+
+        <!-- Comet trails -->
+        <div class="comet-trail" style="left:0;top:50px;width:60px;height:4px;opacity:0.6;"></div>
+        <div class="comet-trail" style="left:0;top:120px;width:45px;height:3px;opacity:0.4;animation-delay:1.5s;"></div>
+
+        <!-- Snake segments -->
+        <div class="snake-segment" style="left:20px;top:80px;width:14px;height:14px;background:rgba(0,200,220,0.3);border-radius:3px;filter:blur(2px);opacity:0.5;"></div>
+        <div class="snake-segment" style="left:40px;top:80px;width:14px;height:14px;background:rgba(0,220,240,0.4);border-radius:3px;filter:blur(2px);opacity:0.6;"></div>
+        <div class="snake-segment" style="left:60px;top:80px;width:15px;height:15px;background:rgba(0,230,255,0.5);border-radius:3px;filter:blur(1px);opacity:0.7;"></div>
+        <div class="snake-head" style="left:80px;top:80px;"></div>
+
+        <!-- Food -->
+        <div class="food" style="left:160px;top:60px;"></div>
+      </div>
+      <div class="card-body">
+        <span class="card-label">Option D</span>
+        <div class="card-title">宇宙星空</div>
+        <p class="card-desc">A glowing serpent glides through deep space, leaving comet trails amid twinkling stars and drifting nebulae.</p>
+        <div class="palette-bar">
+          <span class="palette-label">Palette</span>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+          <div class="swatch"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
