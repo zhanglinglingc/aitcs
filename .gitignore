@@ -1,2 +1,23 @@
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Local agent/editor settings
 .claude/
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Dependency/build caches, in case the project grows later
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+.vite/
